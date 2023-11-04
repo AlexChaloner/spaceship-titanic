@@ -1,4 +1,8 @@
+from typing import Union
+from dataclasses import dataclass
 
+
+@dataclass
 class TitanicDataRow:
     passenger_id: str
     home_planet: str
@@ -39,7 +43,13 @@ class TitanicDataRow:
 
 
 class TitanicData:
-    data: list[TitanicDataRow]
+    data_as_rows: list[TitanicDataRow]
+    data_as_columns: dict[list[Union[float, str, bool, int, tuple]]]
+    fields: list[str] = TitanicDataRow.__dataclass_fields__
 
     def __init__(self, csv_dictionary_rows: list[dict]):
-        self.data = [TitanicDataRow(row) for row in csv_dictionary_rows]
+        self.data_as_rows = [TitanicDataRow(row) for row in csv_dictionary_rows]
+        self.data_as_columns = {
+            column: [getattr(row, column) for row in self.data_as_rows]
+            for column in self.fields
+        }
