@@ -1,21 +1,11 @@
-from utils import read_csv
-from data import TitanicData
+from data import get_data
 import matplotlib.pyplot as plt
 import pandas as pd
 import math
 
 
 def main():
-    TRAIN_DATA_FILE = "data/train.csv"
-    csv_object = read_csv(TRAIN_DATA_FILE)
-    train_data = TitanicData(csv_object)
-
-    train_data_df = pd.read_csv(TRAIN_DATA_FILE, index_col="PassengerId")
-
-    train_data_df[['Cabin1', 'Cabin2', 'Cabin3']] = train_data_df['Cabin'].str.split('/', n=3, expand=True)
-    train_data_df["Cabin2"] = train_data_df["Cabin2"].fillna(0).astype(int)
-    # Remove the 'full_name' column
-    train_data_df = train_data_df.drop('Cabin', axis=1)
+    train_data_df = get_data()
 
     display_all(train_data_df)
     display_comparisons_discrete(train_data_df, "Transported")
