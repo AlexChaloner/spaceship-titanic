@@ -19,6 +19,9 @@ def main():
 
     display_all(train_data_df)
     display_comparisons_discrete(train_data_df, "Transported")
+    display_comparisons_discrete(train_data_df, "VIP")
+    display_comparisons_discrete(train_data_df, "CryoSleep")
+
 
 
 def display_all(df: pd.DataFrame):
@@ -38,6 +41,7 @@ def display_comparisons_discrete(df: pd.DataFrame, comparison_column: str):
         new_df = df[df[comparison_column] == v].copy(deep=True)
         new_df = new_df.drop(comparison_column, axis=1)
         add_charts_all_columns(new_df, fig)
+        fig.suptitle(f"{comparison_column} = {v}")
     plt.show()
 
 
