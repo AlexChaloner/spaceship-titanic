@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 
@@ -11,7 +12,7 @@ def get_data():
     return train_data_df
 
 
-def get_train_data():
+def get_train_data(filter_columns=True):
     df = get_data()
     # Based on human judgment, the important columns
     important_columns = [
@@ -19,6 +20,7 @@ def get_train_data():
         "VIP",
         "TotalSpend",
         "Cabin1",
+        "Cabin2",
         "Cabin3",
         "Age",
         "Destination",
@@ -26,13 +28,14 @@ def get_train_data():
         "Transported"
     ]
 
-    df = df[important_columns]
-    categorical_columns = df.select_dtypes(include=['object']).columns
+    if filter_columns:
+        df = df[important_columns]
+    # categorical_columns = df.select_dtypes(include=['object']).columns
 
-    # Apply one-hot encoding to the categorical columns
-    df_encoded = pd.get_dummies(df, columns=categorical_columns)
+    # # Apply one-hot encoding to the categorical columns
+    # df = pd.get_dummies(df, columns=categorical_columns)
 
-    return df_encoded
+    return df
 
 
 def process_data(df):
@@ -42,7 +45,7 @@ def process_data(df):
 
     # Process Cabins
     df[['Cabin1', 'Cabin2', 'Cabin3']] = df['Cabin'].str.split('/', n=3, expand=True)
-    df["Cabin2"] = df["Cabin2"].fillna(0).astype(int)
+    df["Cabin2"] = df["Cabin2"].fillna(-1).astype(int)
 
     # Remove the 'full_name' column under assumption it is noisy
     df = df.drop('Cabin', axis=1)
