@@ -5,7 +5,7 @@ import pandas as pd
 def get_data():
     TRAIN_DATA_FILE = "data/train.csv"
 
-    train_data_df = pd.read_csv(TRAIN_DATA_FILE, index_col="PassengerId")
+    train_data_df = pd.read_csv(TRAIN_DATA_FILE)
 
     train_data_df = process_data(train_data_df)
 
@@ -16,6 +16,7 @@ def get_train_data(filter_columns=True):
     df = get_data()
     # Based on human judgment, the important columns
     important_columns = [
+        "PassengerIdSplit1",
         "CryoSleep",
         "VIP",
         "TotalSpend",
@@ -49,5 +50,9 @@ def process_data(df):
 
     # Remove the 'full_name' column under assumption it is noisy
     df = df.drop('Cabin', axis=1)
+
+    # Harvest the first half the of the passenger ID, as it has data
+    df[['PassengerIdSplit1', 'PassengerIdSplit2']] = df['PassengerId'].str.split('_', n=1, expand=True)
+    df['PassengerIdSplit1'] = df['PassengerIdSplit1'].fillna(-1).astype(int)
 
     return df
