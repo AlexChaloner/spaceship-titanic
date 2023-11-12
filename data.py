@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from torch.utils.data import DataLoader, Dataset
+import torch
 
 
 def get_data():
@@ -37,6 +39,31 @@ def get_train_data(filter_columns=True):
     # df = pd.get_dummies(df, columns=categorical_columns)
 
     return df
+
+
+# Custom Dataset class for PyTorch
+class CustomDataset(Dataset):
+    def __init__(self, data):
+        self.data = data
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        return self.data.iloc[idx].values
+
+
+def get_torch_data() -> CustomDataset:
+    df = get_train_data()
+    categorical_columns = df.select_dtypes(include=['object', 'category', 'bool']).columns
+    for col in categorical_columns:
+        df[col] = df[col].astype('category').cat.codes
+
+    print(df)
+    print(df.dtypes)
+
+    # Convert Pandas DataFrame to PyTorch dataframe
+    return CustomDataset(df)
 
 
 def process_data(df):

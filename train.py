@@ -7,6 +7,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OrdinalEncoder
 from data import get_train_data
 import numpy as np
+import torch
 
 
 df = get_train_data()
